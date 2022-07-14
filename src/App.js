@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { SearchBar } from "./search/SearchBar";
+import { search_result } from "./fakeAPI/serachResult";
+import { Result } from "./result/Result";
+import styled from "styled-components";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const Header = styled.header`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const Logo = styled.h1`
+  padding: 10px 30px;
+`;
+
+function App () {
+	const [searchResult, setSearchResult] = useState (null);
+	
+	const searchHandler = async searchTerm => {
+		if ( searchTerm.length > 0 ) {
+			setSearchResult (null);
+			const result = await ( search_result (searchTerm) );
+			setSearchResult (result);
+		}
+	};
+	
+	return (
+		<div className="App">
+			<Header>
+				<Logo>Search X</Logo>
+				<SearchBar searchHandler={ searchHandler }/>
+			</Header>
+			{ searchResult && <Result searchResult={ searchResult }/> }
+		</div>
+	);
 }
 
 export default App;
